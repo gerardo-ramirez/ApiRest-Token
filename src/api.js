@@ -26,11 +26,32 @@ route.post('/authentication', async (req,res) => {
 
 });
 
-
-
-
-
 /* Hata aquí la  autenticacion token*/
+//si el token es true : pasamos a las apis
+
+//las apis se resguardan con los middleware:
+route.use((req,res,next)=>{
+  //traemos el token de tres formas : json, headers, y por get.
+  const token = req.body.token || req.query.token || req.headers['x-access-token'];
+  //de esta forma  valido el token recibido
+  if(token){ //si hay token
+    jwt.verify(token, req.app.get('superSecret'),(err,decoded)=>{
+      if(err){
+        return res.json({success: false, message:"token incorrecto"});
+      }else{
+        req.decoded = decoded;
+        next();
+;      }
+    });
+  } else { //si no hay token
+    return  res.status(403).send({
+      success: false,
+     message:"no existe token"    });
+  }
+
+});
+
+//si el token es habilitado entonces puede pasar a la siguientes rutas 
 
 route.get('/users', async (req, res) =>{
 const user =  await User.find();

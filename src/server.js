@@ -8,6 +8,7 @@ require('./connect/connect');
 //
 //settings
 app.set('port', process.env.PORT || 8080 );
+//CREA VARIABLE SECRETA:
 app.set('superSecret',config.secret)
 
 
